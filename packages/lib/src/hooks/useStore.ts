@@ -8,11 +8,7 @@ const defaultSelector = <T, S = T>(state: T) => state as unknown as S;
 
 export const useStore = <T, S = T>(store: Store<T>, selector: (state: T) => S = defaultSelector<T, S>) => {
   const shallowSelector = useShallowSelector(selector);
-  return useSyncExternalStore(
-    (onStoreChange) => {
-      store.subscribe(onStoreChange);
-      return () => {};
-    },
-    () => shallowSelector(store.getState()),
-  );
+  const snapshot = () => shallowSelector(store.getState());
+
+  return useSyncExternalStore(store.subscribe, snapshot);
 };
