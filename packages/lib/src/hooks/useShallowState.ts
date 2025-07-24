@@ -5,9 +5,9 @@ export const useShallowState = <T>(initialValue: T | (() => T)): [T, (newValue: 
   const [state, setState] = useState<T>(initialValue);
 
   const setShallowState = useCallback((newValue: T) => {
-    setState((prevState) => {
-      if (!shallowEquals(prevState, newValue)) return newValue;
-      return prevState;
+    setState((currentValue) => {
+      if (shallowEquals(currentValue, newValue)) return currentValue;
+      else return newValue;
     });
   }, []);
 
