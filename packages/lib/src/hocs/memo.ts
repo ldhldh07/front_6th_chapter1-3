@@ -7,10 +7,14 @@ export function memo<P extends object>(Component: FunctionComponent<P>, equals =
     const propsRef = useRef<P | null>(null);
     const componentRef = useRef<ReactElement | null>(null);
 
-    if (propsRef.current !== null && equals(propsRef.current, props)) return componentRef.current;
+    const isInitialRender = propsRef.current === null;
+    const propsChanged = !equals(propsRef.current, props);
 
-    propsRef.current = props;
-    componentRef.current = createElement(Component, props);
+    if (isInitialRender || propsChanged) {
+      propsRef.current = props;
+      componentRef.current = createElement(Component, props);
+    }
+
     return componentRef.current;
   };
 }
